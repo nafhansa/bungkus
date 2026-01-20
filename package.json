@@ -1,5 +1,6 @@
 {
   "name": "bungkus",
+  "license": "MIT",
   "keywords": [
     "react",
     "form",
@@ -10,7 +11,7 @@
     "save",
     "bungkus"
   ],
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "main": "./dist/bungkus.umd.js",
   "module": "./dist/bungkus.es.js",
