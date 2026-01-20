@@ -1,6 +1,8 @@
 <div align="center">
 
-# <img src="public/bungkus.png" alt="Bungkus" width="50" /> Bungkus
+<img src="public/bungkus.png" alt="Bungkus" width="200" />
+
+# Bungkus
 
 [![NPM Version](https://img.shields.io/npm/v/bungkus?style=flat-square&color=blue)](https://www.npmjs.com/package/bungkus)
 [![License](https://img.shields.io/github/license/nafhansa/bungkus?style=flat-square&color=orange)](https://github.com/nafhansa/bungkus/blob/main/LICENSE)
