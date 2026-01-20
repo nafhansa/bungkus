@@ -1,15 +1,17 @@
 {
   "name": "bungkus",
+  "description": "Bungkus: A lightweight React Hook to save form data (files & text) to IndexedDB. Prevent data loss on refresh.",
   "license": "MIT",
   "keywords": [
     "react",
-    "form",
-    "persistence",
-    "indexeddb",
     "hook",
-    "offline",
-    "save",
-    "bungkus"
+    "form-persistence",
+    "indexeddb",
+    "localstorage-alternative",
+    "persist-form",
+    "file-upload",
+    "bungkus", 
+    "save-form"
   ],
   "version": "1.0.4",
   "type": "module",
