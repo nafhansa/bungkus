@@ -1,6 +1,16 @@
+<div align="center">
+
 # 📦 Bungkus
 
-**Form persistence for the paranoid.** Saves form data (including Files/Blobs) to IndexedDB with encryption and auto-expiration.
+[![NPM Version](https://img.shields.io/npm/v/bungkus?style=flat-square&color=blue)](https://www.npmjs.com/package/bungkus)
+[![License](https://img.shields.io/npm/l/bungkus?style=flat-square&color=orange)](https://github.com/nafhansa/bungkus/blob/main/LICENSE)
+[![Minzipped Size](https://img.shields.io/bundlephobia/minzip/bungkus?style=flat-square&color=success)](https://bundlephobia.com/package/bungkus)
+[![Downloads](https://img.shields.io/npm/dt/bungkus?style=flat-square&color=red)](https://www.npmjs.com/package/bungkus)
+
+**Form persistence for the paranoid.**<br>
+Saves form data (including Files/Blobs) to IndexedDB with encryption and auto-expiration.
+
+</div>
 
 ---
 

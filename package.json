@@ -1,6 +1,16 @@
 {
   "name": "bungkus",
-  "version": "1.0.0",
+  "keywords": [
+    "react",
+    "form",
+    "persistence",
+    "indexeddb",
+    "hook",
+    "offline",
+    "save",
+    "bungkus"
+  ],
+  "version": "1.0.2",
   "type": "module",
   "main": "./dist/bungkus.umd.js",
   "module": "./dist/bungkus.es.js",
