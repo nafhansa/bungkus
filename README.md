@@ -9,7 +9,7 @@
 [![Minzipped Size](https://img.shields.io/bundlephobia/minzip/bungkus?style=flat-square&color=success)](https://bundlephobia.com/package/bungkus)
 [![Downloads](https://img.shields.io/npm/dm/bungkus?style=flat-square&color=red)](https://www.npmjs.com/package/bungkus)
 
-**Form persistence for the paranoid.**<br>
+**Form persistence for the paranoid**<br>
 Saves form data (including Files/Blobs) to IndexedDB with encryption and auto-expiration
 
 </div>
