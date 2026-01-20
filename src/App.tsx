@@ -1,65 +1,107 @@
-import React from 'react';
 import { useBungkus } from './hooks/useBungkus';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const { values, status, daftarkan, buangBungkus } = useBungkus('form-rahasia-v2', {
-    kadaluarsa: 1, 
-    rahasia: true 
+  // Ambil 'values' juga dari hook buat ngecek data mentahnya
+  const { daftarkan, buangBungkus, status, values } = useBungkus('test-form-dev', {
+    rahasia: true,
+    kadaluarsa: 24
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert('✅ Terkirim! Cek Application > Storage > IndexedDB untuk lihat data yang terenkripsi.');
-    buangBungkus();
-  };
+  // State buat preview gambar
+  const [preview, setPreview] = useState<string | null>(null);
 
-  if (status === 'memulihkan') return <div style={{padding:'50px', textAlign:'center'}}>🔐 Membuka Brankas...</div>;
+  // Efek: Kalau 'values.bukti' ada isinya (dari IndexedDB), bikin URL preview
+  useEffect(() => {
+    if (values?.bukti instanceof Blob) {
+      const url = URL.createObjectURL(values.bukti);
+      setPreview(url);
+      
+      // Bersihin memori pas component unmount
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [values?.bukti]);
 
   return (
-    <div style={{ maxWidth: '500px', margin: '40px auto', fontFamily: 'sans-serif' }}>
-      <h1>📦 Bungkus <span style={{fontSize:'0.6em', background:'red', color:'white', padding:'2px 8px', borderRadius:'10px'}}>PRO</span></h1>
-      <p>Data form ini <strong>Terenkripsi</strong> & <strong>Auto-Hapus</strong> dalam 1 jam.</p>
+    <div style={{ maxWidth: '400px', margin: '50px auto', fontFamily: 'sans-serif' }}>
+      <h2>📦 Bungkus Playground</h2>
       
-      {Object.keys(values).length > 0 && (
-        <div style={{ background: '#d4edda', color: '#155724', padding: '10px', borderRadius: '5px', marginBottom: '20px' }}>
-          ✨ Data dipulihkan! (Coba inspect Element, di DB isinya acak-acakan lho)
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <div>
-          <label>Secret Agent Name:</label>
-          <input 
-            type="text" 
-            style={{ width: '100%', padding: '10px' }}
-            {...daftarkan('codename')} 
-            placeholder="Ketik rahasia disini..."
-          />
-        </div>
-
-        <div>
-          <label>Misi Rahasia (Dokumen):</label>
-          <input type="file" {...daftarkan('dokumen_misi')} />
-          
-          {values['dokumen_misi'] && values['dokumen_misi'] instanceof File && (
-            <div style={{ marginTop: '10px', fontSize: '0.9em' }}>
-              📄 File Ready: <strong>{(values['dokumen_misi'] as File).name}</strong>
-            </div>
-          )}
-        </div>
-
-        <button type="submit" style={{ padding: '12px', background: '#333', color: '#fff', border: 'none', cursor: 'pointer' }}>
-          🔒 Kirim Data Aman
-        </button>
-      </form>
-
-      <div style={{ marginTop: '50px', fontSize: '0.8em', color: '#888', borderTop: '1px solid #eee', paddingTop: '10px' }}>
-        <strong>Cara Buktikan Enkripsi:</strong><br/>
-        Inspect &gt; Application &gt; IndexedDB &gt; keyval-store &gt; bungkus-form-rahasia-v2.<br/>
-        Lihat value <code>codename</code>, pasti isinya aneh (contoh: <code>🔒=02bj5SZwl...</code>)
+      {/* Indikator Status */}
+      <div style={{ 
+        marginBottom: '20px', 
+        padding: '10px', 
+        background: status === 'siap' ? '#d4edda' : '#fff3cd',
+        borderRadius: '5px',
+        color: status === 'siap' ? '#155724' : '#856404'
+      }}>
+        Status Engine: <strong>{status.toUpperCase()}</strong>
       </div>
+      
+      <div style={{ background: '#f8f9fa', padding: '25px', borderRadius: '12px', border: '1px solid #dee2e6' }}>
+        <form onSubmit={(e) => { e.preventDefault(); alert('Tersimpan & Dibuang!'); buangBungkus(); setPreview(null); }}>
+          
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Username</label>
+            <input 
+              type="text" 
+              style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+              {...daftarkan('username')} 
+            />
+          </div>
+
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Catatan Rahasia</label>
+            <textarea 
+              rows={3}
+              style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+              {...daftarkan('notes')} 
+            />
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Upload KTP / Bukti</label>
+            
+            {/* INPUT FILE ASLI */}
+            <input 
+              type="file" 
+              accept="image/*"
+              {...daftarkan('bukti')} 
+              // Tambahan: Pas user pilih file baru, update preview langsung
+              onChange={(e) => {
+                daftarkan('bukti').onChange(e); // Panggil handler bawaan bungkus
+                if (e.target.files?.[0]) {
+                  setPreview(URL.createObjectURL(e.target.files[0]));
+                }
+              }}
+            />
+
+            {/* AREA PREVIEW: Ini kuncinya! */}
+            {preview && (
+              <div style={{ marginTop: '10px', padding: '10px', background: 'white', borderRadius: '8px', border: '1px dashed #aaa', textAlign: 'center' }}>
+                <p style={{ margin: '0 0 5px 0', fontSize: '12px', color: 'green' }}>✓ File Tersimpan Aman</p>
+                <img 
+                  src={preview} 
+                  alt="Preview Bukti" 
+                  style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '4px' }} 
+                />
+              </div>
+            )}
+          </div>
+
+          <button type="submit" style={{ width: '100%', padding: '12px', background: '#0d6efd', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+            Submit & Clear Storage
+          </button>
+        </form>
+      </div>
+
+      <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '20px', lineHeight: '1.5' }}>
+        <strong>Cara Tes:</strong><br/>
+        1. Isi Username & Upload Gambar.<br/>
+        2. Refresh Browser.<br/>
+        3. Input file emang bakal kosong (itu security browser), tapi lihat <strong>Preview Gambar</strong> di bawahnya. Kalau muncul, berarti <strong>SUKSES!</strong>
+      </p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
