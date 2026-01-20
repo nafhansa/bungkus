@@ -10,7 +10,7 @@
 [![Downloads](https://img.shields.io/npm/dm/bungkus?style=flat-square&color=red)](https://www.npmjs.com/package/bungkus)
 
 **Form persistence for the paranoid.**<br>
-Saves form data (including Files/Blobs) to IndexedDB with encryption and auto-expiration.
+Saves form data (including Files/Blobs) to IndexedDB with encryption and auto-expiration
 
 </div>
 
