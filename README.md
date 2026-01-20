@@ -45,6 +45,28 @@ npm install bungkus
 
 ---
 
+## 🎮 Try It Locally
+
+Want to see the magic before installing? We included a full playground in this repo.
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/nafhansa/bungkus.git
+
+# 2. Install & Run
+cd bungkus
+npm install
+npm run dev
+```
+
+Try filling out the form, uploading a file, and refreshing the browser. The data persists!
+
+> ⚠️ **Note on File Inputs:** Due to browser security, we cannot programmatically restore the value of `<input type="file" />`. The file input will look empty after refresh, but the File/Blob data is safely stored.
+>
+> You should use a visual preview (like an `<img>` tag) to show the user that their file is still there. (See [src/App.tsx](src/App.tsx) for the implementation example).
+
+---
+
 ## Usage
 
 ### The "Safety Net" (Basic Usage)
