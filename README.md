@@ -30,7 +30,7 @@ We provide **File Support**, **Encryption**, and **Auto-Expiry**. All in one tin
 ## Install
 
 ```bash
-npm install @nafhan/bungkus
+npm install bungkus
 ```
 
 ---
@@ -42,7 +42,7 @@ npm install @nafhan/bungkus
 Perfect for long forms. It watches your inputs and saves them. If the browser crashes, the data survives.
 
 ```typescript
-import { useBungkus } from '@nafhan/bungkus';
+import { useBungkus } from 'bungkus';
 
 function RegistrationForm() {
   const { daftarkan, buangBungkus } = useBungkus('register-v1');
