@@ -114,6 +114,72 @@ const { values } = useBungkus('short-lived-form', {
 
 ---
 
+## Advanced Features
+
+### 🔴 BungkusLive - Real-time Cross-Tab Sync
+
+Synchronize form data across multiple browser tabs in real-time using BroadcastChannel API. Perfect for multi-tab workflows.
+
+```typescript
+import { useBungkusLive } from 'bungkus/toolkit/useBungkusLive';
+
+function MultiTabForm() {
+  const { daftarkan, buangBungkus } = useBungkusLive('my-form');
+
+  return (
+    <form>
+      <input type="text" {...daftarkan('username')} />
+      {/* Changes are instantly synced across all open tabs! */}
+    </form>
+  );
+}
+```
+
+**Features:**
+- Automatic synchronization across browser tabs
+- Prevents echo/loop with smart update detection
+- Uses the same API as `useBungkus`
+
+---
+
+### 🧙‍♂️ BungkusWizard - Multi-Step Form Management
+
+Manage complex multi-step forms with isolated storage per step. Each step gets its own storage space.
+
+```typescript
+import { useBungkusWizard } from 'bungkus/toolkit/useBungkusWizard';
+
+function RegistrationWizard() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const { daftarkan, wizardInfo } = useBungkusWizard('registration', currentStep);
+
+  return (
+    <div>
+      {currentStep === 1 && (
+        <div>
+          <input {...daftarkan('fullName')} />
+          <input {...daftarkan('email')} />
+        </div>
+      )}
+      {currentStep === 2 && (
+        <div>
+          <input {...daftarkan('address')} />
+          <input {...daftarkan('phone')} />
+        </div>
+      )}
+      {/* Each step is saved independently */}
+    </div>
+  );
+}
+```
+
+**Features:**
+- Unique storage per step
+- Navigate between steps without data loss
+- Access to `wizardInfo` for current step tracking
+
+---
+
 ## Cheat Sheet (Docs)
 
 Look, I built this because I needed to save files in a form without a backend. Here is the quick API:
@@ -124,12 +190,27 @@ Look, I built this because I needed to save files in a form without a backend. H
 - `formId` (required): Unique string to identify the form.
 - `config.kadaluarsa` (default: `24`): Hours before data expires.
 - `config.rahasia` (default: `true`): Encrypt text data.
+- `config.compress` (default: `false`): Compress images before saving.
 
 **Returns:**
 - `daftarkan(name)`: Helper to spread into `<input>`. Handles value, onChange, and files.
 - `buangBungkus()`: Call this on successful submit to clear the storage.
 - `values`: The raw data object (if you need it manually).
 - `status`: `'idle' | 'memulihkan' | 'siap'`.
+
+### `useBungkusLive(formId)`
+
+Same as `useBungkus` but with cross-tab synchronization. Use when you need real-time sync across browser tabs.
+
+### `useBungkusWizard(wizardName, step)`
+
+**Parameters:**
+- `wizardName` (required): Unique name for the entire wizard flow.
+- `step` (required): Current step number.
+
+**Returns:**
+- All `useBungkus` returns
+- `wizardInfo`: Object with `currentStep` and `storageKey`
 
 ---
 

@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { gudang, type BungkusanData } from '../core/storage';
+import { compressImage } from '../toolkit/utils/compressor'; 
 
 interface BungkusConfig {
   kadaluarsa?: number;
   rahasia?: boolean;
+  compress?: boolean;
 }
 
 export function useBungkus(formId: string, config: BungkusConfig = {}) {
-  const { kadaluarsa = 24, rahasia = true } = config;
+  const { kadaluarsa = 24, rahasia = true, compress = false } = config;
 
   const [values, setValues] = useState<BungkusanData>({});
   const [status, setStatus] = useState<'idle' | 'memulihkan' | 'siap'>('idle');
@@ -46,13 +48,27 @@ export function useBungkus(formId: string, config: BungkusConfig = {}) {
   }, [formId, rahasia]);
 
   const daftarkan = (key: string) => {
+    const isBinary = values[key] instanceof Blob;
+
     return {
       name: key,
-      value: values[key] instanceof File ? undefined : (values[key] as string) || '',
+      value: isBinary ? undefined : (values[key] as string) || '',
       
-      onChange: (e: any) => {
+      onChange: async (e: any) => {
         const file = e.target.files ? e.target.files[0] : null;
-        const isi = file || e.target.value;
+        let isi = file || e.target.value;
+
+        if (file && compress) {
+          try {
+            console.log(`📦 BungkusCompressor: Memadatkan ${file.name}...`);
+            const compressedBlob = await compressImage(file, 0.7);
+            isi = compressedBlob;
+            console.log(`✅ Berhasil dipadatkan!`);
+          } catch (err) {
+            console.warn("⚠️ Gagal compress, menyimpan file asli:", err);
+          }
+        }
+
         bungkus(key, isi);
       }
     };
@@ -63,5 +79,5 @@ export function useBungkus(formId: string, config: BungkusConfig = {}) {
     gudang.buang(formId);
   };
 
-  return { values, status, daftarkan, buangBungkus };
+  return { values, status, daftarkan, buangBungkus, setValues, bungkus };
 }
