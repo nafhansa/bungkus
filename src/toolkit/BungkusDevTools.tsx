@@ -122,7 +122,7 @@ export function BungkusDevTools({ formId, position = 'bottom-right', refreshInte
           borderRadius: '12px',
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}>
-          <img src="/bungkus.png" alt="⚡" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
+          <img src="/bungkus_square.png" alt="⚡" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
         </div>
         
         {/* Status Dot */}
@@ -161,7 +161,7 @@ export function BungkusDevTools({ formId, position = 'bottom-right', refreshInte
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
            <div style={{ width: '32px', height: '32px', background: theme.brandLight, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="/bungkus.png" alt="B" style={{ width: '20px', height: '20px' }} />
+              <img src="/bungkus_square.png" alt="B" style={{ width: '20px', height: '20px' }} />
            </div>
            <div>
              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '700', color: theme.textMain }}>Bungkus DevTools</h3>

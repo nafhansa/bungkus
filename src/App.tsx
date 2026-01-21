@@ -72,7 +72,7 @@ function App() {
         {/* HEADER: LOGO & BRANDING */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
           <div style={{ width: '60px', height: '60px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '30px' }}>
-            <img src="/bungkus.png" alt="Bungkus Toolkit" style={{ width: '40px', height: '40px' }} />
+            <img src="/bungkus_square.png" alt="Bungkus Toolkit" style={{ width: '40px', height: '40px' }} />
           </div>
           <div>
             <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '800', color: '#111827', letterSpacing: '-0.025em' }}>Bungkus Toolkit</h1>
