@@ -238,6 +238,48 @@ function OfflineForm() {
 
 ---
 
+### 🛠️ BungkusDevTools - Visual Storage Inspector
+
+A floating DevTools panel for debugging and inspecting your form's IndexedDB storage in real-time during development. Perfect for debugging and monitoring what's being saved.
+
+```typescript
+import { BungkusDevTools } from 'bungkus/toolkit/BungkusDevTools';
+
+function App() {
+  return (
+    <>
+      <YourFormComponent />
+      
+      {/* Add DevTools - only shows in development */}
+      {process.env.NODE_ENV === 'development' && (
+        <BungkusDevTools 
+          formId="your-form-id" 
+          position="bottom-right"
+          refreshInterval={500}
+        />
+      )}
+    </>
+  );
+}
+```
+
+**Features:**
+- 🌿 Beautiful forest-themed UI with glassmorphism
+- 📊 Real-time data updates (500ms polling by default)
+- 💾 Live storage size monitoring
+- 📦 Pretty JSON viewer with Blob detection
+- 🗑️ Quick storage clear button
+- 🎯 Floating button that doesn't interfere with your UI
+
+**Props:**
+- `formId` (required): The form ID to inspect (must match your `useBungkus` formId)
+- `position` (optional): `'bottom-right'` or `'bottom-left'` (default: `'bottom-right'`)
+- `refreshInterval` (optional): Milliseconds between data refreshes (default: `500`)
+
+**Best Practice:** Only include BungkusDevTools in development mode to avoid shipping it to production.
+
+---
+
 ## Cheat Sheet (Docs)
 
 Look, I built this because I needed to save files in a form without a backend. Here is the quick API:
@@ -283,6 +325,15 @@ Same as `useBungkus` but with cross-tab synchronization. Use when you need real-
 - `networkStatus`: Current network state (`'online' | 'offline' | 'syncing' | 'error'`)
 - `triggerSync()`: Manual function to trigger upload
 - `hasPendingData`: Boolean indicating if there's data waiting to be synced
+
+### `<BungkusDevTools />`
+
+**Props:**
+- `formId` (required): The form ID to inspect
+- `position` (optional): `'bottom-right'` | `'bottom-left'`
+- `refreshInterval` (optional): Refresh rate in milliseconds (default: `500`)
+
+**Component:** Floating visual inspector for debugging IndexedDB storage in real-time.
 
 ---
 

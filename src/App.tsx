@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useBungkus } from './hooks/useBungkus';
 import { useBungkusSync } from './toolkit/useBungkusSync';
+import { BungkusDevTools } from './toolkit/BungkusDevTools';
 
 const mockApiSubmit = async (data: any) => {
   console.log("📦 Data diterima Server:", data); 
@@ -13,6 +14,8 @@ const mockApiSubmit = async (data: any) => {
     }, 2500);
   });
 };
+
+const FORM_ID = 'showcase-form-v1';
 
 const IconRefresh = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>;
 const IconImage = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>;
@@ -220,28 +223,7 @@ function App() {
           </div>
         </div>
 
-        {/* 🕵️ DARK MODE DEBUGGER */}
-        <div style={{ marginTop: '40px', background: '#111827', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)' }}>
-          <div style={{ background: '#1f2937', padding: '10px 20px', display: 'flex', gap: '6px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }}></div>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b' }}></div>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981' }}></div>
-            <span style={{ marginLeft: '10px', fontSize: '12px', color: '#9ca3af', fontFamily: 'monospace' }}>gudang-inspector.json</span>
-          </div>
-          <div style={{ padding: '20px', overflowX: 'auto' }}>
-            <pre style={{ margin: 0, fontFamily: "'Fira Code', 'Consolas', monospace", fontSize: '12px', color: '#a5b4fc', lineHeight: '1.5' }}>
-{`// Data yang tersimpan di IndexedDB (locally)
-{
-  "status": "${status}",
-  "form_id": "showcase-form-v1",
-  "data": ${JSON.stringify({
-    ...values,
-    bukti: values.bukti ? `[Blob: ${formatSize((values.bukti as Blob).size)}]` : null
-  }, null, 2)}
-}`}
-            </pre>
-          </div>
-        </div>
+        <BungkusDevTools formId={FORM_ID} />
 
         <p style={{ textAlign: 'center', marginTop: '30px', color: '#9ca3af', fontSize: '12px' }}>
           Built with 🥡 <strong>Bungkus Toolkit</strong> • Offline First • Auto Compression
