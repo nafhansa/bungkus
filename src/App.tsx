@@ -1,9 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useBungkus } from './hooks/useBungkus';
+import { useBungkusSync } from './toolkit/useBungkusSync';
+
+const mockApiSubmit = async (data: any) => {
+  console.log("📦 Data diterima Server:", data); 
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      Math.random() > 0.1 
+        ? resolve({ status: 200, message: "Data received!" }) 
+        : reject("Internal Server Error");
+    }, 2500);
+  });
+};
 
 const IconRefresh = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>;
 const IconImage = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>;
-const IconTrash = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
 
 function App() {
   const [isCompressEnabled, setCompressEnabled] = useState(true);
@@ -12,6 +24,19 @@ function App() {
     kadaluarsa: 24,
     compress: isCompressEnabled
   });
+
+  const { networkStatus, triggerSync, hasPendingData } = useBungkusSync(
+    'showcase-form-v1',
+    mockApiSubmit,
+    {
+      autoSync: true,
+      onSuccess: (res) => {
+        alert(`✅ Data Terkirim ke Server!\nRespon: ${res}`);
+        setPreviewUrl(null);
+      },
+      onError: () => alert("❌ Gagal upload, coba lagi nanti.")
+    }
+  );
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -50,7 +75,7 @@ function App() {
             <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '800', color: '#111827', letterSpacing: '-0.025em' }}>Bungkus Toolkit</h1>
             <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '14px' }}>Offline-first storage with Auto-Compression.</p>
           </div>
-          <div style={{ marginLeft: 'auto' }}>
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
             <span style={{ 
               background: status === 'siap' ? '#ecfdf5' : '#fffbeb', 
               color: status === 'siap' ? '#047857' : '#b45309',
@@ -58,9 +83,24 @@ function App() {
             }}>
               ● {status.toUpperCase()}
             </span>
+            <span style={{ 
+              background: networkStatus === 'online' ? '#dbeafe' : 
+                         networkStatus === 'offline' ? '#fee2e2' : 
+                         networkStatus === 'syncing' ? '#fef3c7' : '#fecaca',
+              color: networkStatus === 'online' ? '#1e40af' : 
+                     networkStatus === 'offline' ? '#991b1b' : 
+                     networkStatus === 'syncing' ? '#92400e' : '#991b1b',
+              padding: '6px 12px', borderRadius: '99px', fontSize: '12px', fontWeight: '700', 
+              border: networkStatus === 'online' ? '1px solid #93c5fd' : 
+                      networkStatus === 'offline' ? '1px solid #fca5a5' : 
+                      networkStatus === 'syncing' ? '1px solid #fde047' : '1px solid #fca5a5'
+            }}>
+              {networkStatus === 'online' ? 'ONLINE' : 
+               networkStatus === 'offline' ? 'OFFLINE' : 
+               networkStatus === 'syncing' ? 'SYNCING' : 'ERROR'}
+            </span>
           </div>
         </div>
-
         {/* 🛠️ MAIN CARD */}
         <div style={{ background: 'white', borderRadius: '24px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)' }}>
           
@@ -163,12 +203,16 @@ function App() {
                 </button>
                 
                 <button 
-                  type="submit" 
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', background: '#10b981', border: 'none', borderRadius: '12px', fontSize: '14px', fontWeight: '600', color: 'white', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)', transition: '0.2s' }}
-                  onMouseOver={(e) => e.currentTarget.style.filter = 'brightness(110%)'}
+                  type="button"
+                  onClick={triggerSync}
+                  disabled={networkStatus === 'syncing' || !hasPendingData}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', background: networkStatus === 'syncing' || !hasPendingData ? '#9ca3af' : '#10b981', border: 'none', borderRadius: '12px', fontSize: '14px', fontWeight: '600', color: 'white', cursor: networkStatus === 'syncing' || !hasPendingData ? 'not-allowed' : 'pointer', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)', transition: '0.2s', opacity: networkStatus === 'syncing' || !hasPendingData ? 0.6 : 1 }}
+                  onMouseOver={(e) => { if (networkStatus !== 'syncing' && hasPendingData) e.currentTarget.style.filter = 'brightness(110%)' }}
                   onMouseOut={(e) => e.currentTarget.style.filter = 'brightness(100%)'}
                 >
-                  <IconTrash /> Save & Clear
+                  {networkStatus === 'syncing' ? '☁️ Mengirim ke Server Cloud...' : 
+                   networkStatus === 'offline' ? '💾 Simpan Offline (Menunggu WiFi)' : 
+                   '🚀 Submit ke Server'}
                 </button>
               </div>
 

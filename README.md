@@ -179,6 +179,65 @@ function RegistrationWizard() {
 
 ---
 
+### ☁️ BungkusSync - Offline-First with Auto-Upload
+
+Automatically sync form data to your backend when the user comes back online. Perfect for offline-first Progressive Web Apps (PWAs).
+
+```typescript
+import { useBungkus } from 'bungkus';
+import { useBungkusSync } from 'bungkus/toolkit/useBungkusSync';
+
+// Your API function
+const submitToServer = async (data) => {
+  const response = await fetch('/api/submit', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+  return response.json();
+};
+
+function OfflineForm() {
+  const { daftarkan } = useBungkus('offline-form-v1');
+  
+  const { networkStatus, triggerSync, hasPendingData } = useBungkusSync(
+    'offline-form-v1',  // Must match useBungkus formId
+    submitToServer,     // Your API function
+    {
+      autoSync: true,   // Auto-upload when online
+      onSuccess: (res) => alert('✅ Submitted!'),
+      onError: (err) => alert('❌ Failed to submit')
+    }
+  );
+
+  return (
+    <form>
+      <input {...daftarkan('username')} />
+      <input {...daftarkan('email')} />
+      
+      <button 
+        onClick={triggerSync} 
+        disabled={networkStatus === 'syncing' || !hasPendingData}
+      >
+        {networkStatus === 'syncing' ? '☁️ Uploading...' : 
+         networkStatus === 'offline' ? '💾 Save Offline' : 
+         '🚀 Submit'}
+      </button>
+      
+      <span>Network: {networkStatus}</span>
+    </form>
+  );
+}
+```
+
+**Features:**
+- Real-time network status detection (online/offline/syncing/error)
+- Auto-upload when internet reconnects
+- Manual trigger support
+- Success/Error callbacks
+- Smart polling (500ms) for reliable offline detection
+
+---
+
 ## Cheat Sheet (Docs)
 
 Look, I built this because I needed to save files in a form without a backend. Here is the quick API:
@@ -210,6 +269,20 @@ Same as `useBungkus` but with cross-tab synchronization. Use when you need real-
 **Returns:**
 - All `useBungkus` returns
 - `wizardInfo`: Object with `currentStep` and `storageKey`
+
+### `useBungkusSync(formId, apiCall, config?)`
+
+**Parameters:**
+- `formId` (required): Must match the formId used in `useBungkus`.
+- `apiCall` (required): Async function that takes form data and returns a Promise. This is your backend API call.
+- `config.autoSync` (default: `true`): Automatically upload when internet reconnects.
+- `config.onSuccess`: Callback function called after successful upload.
+- `config.onError`: Callback function called on upload failure.
+
+**Returns:**
+- `networkStatus`: Current network state (`'online' | 'offline' | 'syncing' | 'error'`)
+- `triggerSync()`: Manual function to trigger upload
+- `hasPendingData`: Boolean indicating if there's data waiting to be synced
 
 ---
 
